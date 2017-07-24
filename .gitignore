@@ -1,0 +1,10 @@
+build/
+.DS_Store
+generated/
+out/
+.gradle
+.idea
+*.ipr
+*.iml
+*.iws
+gradle.properties
