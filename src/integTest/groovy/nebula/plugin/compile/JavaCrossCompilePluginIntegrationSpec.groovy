@@ -3,10 +3,10 @@ package nebula.plugin.compile
 import com.google.common.base.Throwables
 import nebula.test.IntegrationSpec
 
-class CrossCompilePluginIntegrationSpec extends IntegrationSpec {
+class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
     def 'plugin applies'() {
         buildFile << """\
-            apply plugin: 'nebula.cross-compile'
+            apply plugin: 'nebula.java-cross-compile'
         """
 
         when:
@@ -18,7 +18,7 @@ class CrossCompilePluginIntegrationSpec extends IntegrationSpec {
 
     def 'compatibility less than current version'() {
         buildFile << """\
-            apply plugin: 'nebula.cross-compile'
+            apply plugin: 'nebula.java-cross-compile'
             
             sourceCompatibility = 1.7
         """
@@ -32,7 +32,7 @@ class CrossCompilePluginIntegrationSpec extends IntegrationSpec {
 
     def 'missing jdk throws exception'() {
         buildFile << """\
-            apply plugin: 'nebula.cross-compile'
+            apply plugin: 'nebula.java-cross-compile'
             apply plugin: 'java'
             
             sourceCompatibility = 1.4
@@ -49,7 +49,7 @@ class CrossCompilePluginIntegrationSpec extends IntegrationSpec {
 
     def 'java compilation does not warn about bootstrap class path'() {
         buildFile << """\
-            apply plugin: 'nebula.cross-compile'
+            apply plugin: 'nebula.java-cross-compile'
             apply plugin: 'java'
             
             sourceCompatibility = 1.7

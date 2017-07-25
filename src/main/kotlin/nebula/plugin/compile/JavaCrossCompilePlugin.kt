@@ -12,7 +12,7 @@ import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.File
 
-class CrossCompilePlugin : Plugin<Project> {
+class JavaCrossCompilePlugin : Plugin<Project> {
     companion object {
         const val RT_JAR_PATH = "jre/lib/rt.jar"
         val providers = listOf(EnvironmentJDKPathProvider(), DefaultLocationJDKPathProvider())
