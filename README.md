@@ -16,7 +16,7 @@ The plugin supports Java, Groovy joint compilation, and Kotlin. The plugin locat
     - In the form `JDK1x` where `x` is the major version, for instance `JDK18` for Java 8
 - Default installation locations for MacOS, Ubuntu and Windows
     - Where more than one version of the JDK is available for a given version is available, the highest is used
-    - The lookup prefers Oracle JDKs, but falls back to OpenJDK where possible 
+    - The lookup prefers Oracle JDKs, but falls back to OpenJDK where possible
 
 # Quick Start
 
