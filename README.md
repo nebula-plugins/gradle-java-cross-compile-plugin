@@ -1,4 +1,4 @@
-# Gradle Cross-compile Plugin
+# Gradle Java Cross-Compile Plugin
 
 ![Support Status](https://img.shields.io/badge/nebula-supported-brightgreen.svg)
 [![Build Status](https://travis-ci.org/nebula-plugins/gradle-cross-compile-plugin.svg?branch=master)](https://travis-ci.org/nebula-plugins/gradle-cross-compile-plugin)
