@@ -35,7 +35,8 @@ class DefaultLocationJDKPathProvider : JDKPathProvider {
         }
 
         val jdkHome = candidates.firstOrNull {
-            it.name.startsWith("jdk1.${javaVersion.majorVersion}.0")
+            val version = "1.${javaVersion.majorVersion}.0"
+            it.name.startsWith("jdk1.$version.0") || it.name.startsWith("$version.jdk")
         }
 
         if (jdkHome != null) {

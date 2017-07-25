@@ -15,6 +15,8 @@ import java.io.File
 class JavaCrossCompilePlugin : Plugin<Project> {
     companion object {
         const val RT_JAR_PATH = "jre/lib/rt.jar"
+        const val CLASSES_JAR_PATH = "../Classes/classes.jar"
+
         val providers = listOf(EnvironmentJDKPathProvider(), DefaultLocationJDKPathProvider())
     }
 
@@ -31,26 +33,34 @@ class JavaCrossCompilePlugin : Plugin<Project> {
         if (targetCompatibility != JavaVersion.current()) {
             with(project.tasks) {
                 withType(JavaCompile::class.java) {
-                    it.options.bootClasspath = targetCompatibility.runtimeJar()
+                    it.options.bootClasspath = targetCompatibility.locate().bootClasspath
                 }
                 withType(GroovyCompile::class.java) {
-                    it.options.bootClasspath = targetCompatibility.runtimeJar()
+                    it.options.bootClasspath = targetCompatibility.locate().bootClasspath
                 }
                 project.plugins.withId("kotlin") {
                     withType(KotlinCompile::class.java) {
-                        it.kotlinOptions.jdkHome = targetCompatibility.jdkHome()
+                        it.kotlinOptions.jdkHome = targetCompatibility.locate().jdkHome
                     }
                 }
             }
         }
     }
 
-    private fun JavaVersion.jdkHome(): String {
-        return providers
+    private fun JavaVersion.locate(): JavaLocation {
+        val jdkHome = providers
                 .map { it.provide(this) }
-                .filter { File(it, RT_JAR_PATH).exists() }
-                .firstOrNull() ?: throw IllegalStateException("Could not locate a compatible JDK for target compatibility $this. Change the source/target compatibility, set a JDK_1$majorVersion environment variable with the location, or install to one of the default search locations")
+                .firstOrNull() ?: throw cannotLocate()
+        val runtimeJars = listOf(
+                File(jdkHome, RT_JAR_PATH),
+                File(jdkHome, CLASSES_JAR_PATH)
+        )
+        val bootClasspath = runtimeJars
+                .firstOrNull { it.exists() } ?: throw cannotLocate()
+        return JavaLocation(jdkHome, bootClasspath.absolutePath)
     }
 
-    private fun JavaVersion.runtimeJar(): String = File(jdkHome(), RT_JAR_PATH).absolutePath
+    private fun JavaVersion.cannotLocate(): IllegalStateException = IllegalStateException("Could not locate a compatible JDK for target compatibility $this. Change the source/target compatibility, set a JDK_1$majorVersion environment variable with the location, or install to one of the default search locations")
+
+    data class JavaLocation(val jdkHome: String, val bootClasspath: String)
 }
