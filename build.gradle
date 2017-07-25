@@ -38,8 +38,8 @@ contacts {
 pluginBundle {
     plugins {
         resolutionRules {
-            id = 'nebula.cross-compile'
-            displayName = 'Gradle Cross-Compile Plugin'
+            id = 'nebula.java-cross-compile'
+            displayName = 'Gradle Java Cross-Compile Plugin'
             description = project.description
             tags = ['nebula', 'compile', 'java', 'groovy', 'kotlin']
         }
