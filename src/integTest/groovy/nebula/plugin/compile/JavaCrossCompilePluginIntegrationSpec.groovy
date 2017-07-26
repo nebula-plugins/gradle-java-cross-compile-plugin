@@ -36,7 +36,6 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
 
         where:
         sourceCompatibility | _
-        1.6 | _
         1.7 | _
         1.8 | _
     }
