@@ -2,6 +2,7 @@ package nebula.plugin.compile
 
 import com.google.common.base.Throwables
 import nebula.test.IntegrationSpec
+import spock.lang.Unroll
 
 class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
     def 'plugin applies'() {
@@ -16,11 +17,12 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         noExceptionThrown()
     }
 
-    def 'compatibility less than current version'() {
+    @Unroll
+    def 'sourceCompatibility set to #sourceCompatibility'(Double sourceCompatibility) {
         buildFile << """\
             apply plugin: 'nebula.java-cross-compile'
             
-            sourceCompatibility = 1.7
+            sourceCompatibility = $sourceCompatibility
         """
 
         when:
@@ -28,6 +30,12 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
 
         then:
         noExceptionThrown()
+
+        where:
+        sourceCompatibility | _
+        1.6 | _
+        1.7 | _
+        1.8 | _
     }
 
     def 'missing jdk throws exception'() {
