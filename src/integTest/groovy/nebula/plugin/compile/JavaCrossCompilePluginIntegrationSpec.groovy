@@ -21,6 +21,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
     def 'sourceCompatibility set to #sourceCompatibility'(Double sourceCompatibility) {
         buildFile << """\
             apply plugin: 'nebula.java-cross-compile'
+            apply plugin: 'java'
             
             sourceCompatibility = $sourceCompatibility
         """
