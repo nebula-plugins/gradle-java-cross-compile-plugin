@@ -61,7 +61,11 @@ class JavaCrossCompilePlugin : Plugin<Project> {
                 File(jdkHome, CLASSES_JAR_PATH)
         )
         val bootClasspath = runtimeJars
-                .firstOrNull { it.exists() } ?: throw cannotLocate()
+                .firstOrNull {
+                    val exists = it.exists()
+                    if (exists) logger.debug("Found runtime classes jar $it") else logger.debug("Runtime classes jar $it does not exist")
+                    exists
+                } ?: throw cannotLocate()
         return JavaLocation(jdkHome, bootClasspath.absolutePath)
     }
 
