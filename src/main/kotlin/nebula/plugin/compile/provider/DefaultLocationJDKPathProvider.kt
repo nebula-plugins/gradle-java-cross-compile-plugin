@@ -31,7 +31,7 @@ class DefaultLocationJDKPathProvider : JDKPathProvider {
 
         listOf("oracle", "openjdk").forEach { variant ->
             val jdkHome = candidates.firstOrNull {
-                logger.debug("No candidates were found in search locations $basePaths")
+                logger.debug("Evaluating Ubuntu candidate ${it.name}")
                 it.name.startsWith("java-${javaVersion.majorVersion}-$variant")
             }
             if (jdkHome != null) {
@@ -41,6 +41,7 @@ class DefaultLocationJDKPathProvider : JDKPathProvider {
         }
 
         val jdkHome = candidates.firstOrNull {
+            logger.debug("Evaluating macOS/Windows candidate ${it.name}")
             val version = "1.${javaVersion.majorVersion}.0"
             it.name.startsWith("jdk1.$version.0") || it.name.startsWith("$version.jdk")
         }

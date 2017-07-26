@@ -51,6 +51,7 @@ class JavaCrossCompilePlugin : Plugin<Project> {
     }
 
     private fun JavaVersion.locate(): JavaLocation {
+        logger.debug("Locating JDK for $this")
         val jdkHome = providers
                 .map { it.provide(this) }
                 .firstOrNull() ?: throw cannotLocate()
