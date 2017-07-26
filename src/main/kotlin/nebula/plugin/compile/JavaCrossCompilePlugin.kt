@@ -10,6 +10,8 @@ import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 
 class JavaCrossCompilePlugin : Plugin<Project> {
@@ -17,6 +19,7 @@ class JavaCrossCompilePlugin : Plugin<Project> {
         const val RT_JAR_PATH = "jre/lib/rt.jar"
         const val CLASSES_JAR_PATH = "../Classes/classes.jar"
 
+        val logger: Logger = LoggerFactory.getLogger(JavaCrossCompilePlugin::class.java)
         val providers = listOf(EnvironmentJDKPathProvider(), DefaultLocationJDKPathProvider())
     }
 
@@ -51,6 +54,7 @@ class JavaCrossCompilePlugin : Plugin<Project> {
         val jdkHome = providers
                 .map { it.provide(this) }
                 .firstOrNull() ?: throw cannotLocate()
+        logger.debug("Found JDK for $this at $jdkHome")
         val runtimeJars = listOf(
                 File(jdkHome, RT_JAR_PATH),
                 File(jdkHome, CLASSES_JAR_PATH)

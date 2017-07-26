@@ -1,6 +1,8 @@
 package nebula.plugin.compile.provider
 
 import org.gradle.api.JavaVersion
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileFilter
 
@@ -9,6 +11,7 @@ import java.io.FileFilter
  */
 class DefaultLocationJDKPathProvider : JDKPathProvider {
     companion object {
+        val logger: Logger = LoggerFactory.getLogger(DefaultLocationJDKPathProvider::class.java)
         val basePaths = listOf(
                 File("/usr/lib/jvm"),
                 File("/Library/Java/JavaVirtualMachines"),
@@ -22,14 +25,17 @@ class DefaultLocationJDKPathProvider : JDKPathProvider {
         }.reversed()
 
         if (candidates.isEmpty()) {
+            logger.debug("No candidates were found in search locations $basePaths")
             return null
         }
 
         listOf("oracle", "openjdk").forEach { variant ->
             val jdkHome = candidates.firstOrNull {
+                logger.debug("No candidates were found in search locations $basePaths")
                 it.name.startsWith("java-${javaVersion.majorVersion}-$variant")
             }
             if (jdkHome != null) {
+                logger.debug("Found Ubuntu JDK at $jdkHome")
                 return jdkHome.absolutePath
             }
         }
@@ -42,10 +48,15 @@ class DefaultLocationJDKPathProvider : JDKPathProvider {
         if (jdkHome != null) {
             val macOsJdkHome = File(jdkHome, "Contents/Home")
             if (macOsJdkHome.exists()) {
+                logger.debug("Found macOS JDK at $jdkHome")
                 return macOsJdkHome.absolutePath
             }
         }
 
-        return jdkHome?.absolutePath
+        if (jdkHome == null) {
+            logger.debug("No JDKs found in candidate locations $candidates ")
+            return null
+        }
+        return jdkHome.absolutePath
     }
 }
