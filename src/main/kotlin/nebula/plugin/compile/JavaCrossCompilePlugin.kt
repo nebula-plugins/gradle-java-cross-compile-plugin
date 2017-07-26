@@ -10,6 +10,7 @@ import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.utils.addToStdlib.firstNotNullResult
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -53,18 +54,30 @@ class JavaCrossCompilePlugin : Plugin<Project> {
     private fun JavaVersion.locate(): JavaLocation {
         logger.debug("Locating JDK for $this")
         val jdkHome = providers
-                .map { it.provide(this) }
-                .firstOrNull() ?: throw cannotLocate()
+                .firstNotNullResult {
+                    val jdkHome = it.provide(this)
+                    if (jdkHome == null) {
+                        logger.debug("Provider $it did not find a JDK")
+                        null
+                    } else {
+                        logger.debug("Provider $it found a JDK at $jdkHome")
+                        jdkHome
+                    }
+                } ?: throw cannotLocate()
         logger.debug("Found JDK for $this at $jdkHome")
         val runtimeJars = listOf(
                 File(jdkHome, RT_JAR_PATH),
                 File(jdkHome, CLASSES_JAR_PATH)
         )
         val bootClasspath = runtimeJars
-                .firstOrNull {
-                    val exists = it.exists()
-                    if (exists) logger.debug("Found runtime classes jar $it") else logger.debug("Runtime classes jar $it does not exist")
-                    exists
+                .firstNotNullResult {
+                    if (it.exists()) {
+                        logger.debug("Found runtime classes jar $it")
+                        it
+                    } else {
+                        logger.debug("Runtime classes jar $it does not exist")
+                        null
+                    }
                 } ?: throw cannotLocate()
         return JavaLocation(jdkHome, bootClasspath.absolutePath)
     }
