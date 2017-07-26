@@ -27,10 +27,12 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         """
 
         when:
-        runTasksSuccessfully('help')
+        def result = runTasks('help', '--debug')
 
         then:
-        noExceptionThrown()
+        println result.standardOutput
+        println result.standardError
+        result.rethrowFailure()
 
         where:
         sourceCompatibility | _
