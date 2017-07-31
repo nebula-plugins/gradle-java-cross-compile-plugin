@@ -27,7 +27,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         """
 
         when:
-        def result = runTasks('help', '--debug')
+        def result = runTasks('help')
 
         then:
         println result.standardOutput
