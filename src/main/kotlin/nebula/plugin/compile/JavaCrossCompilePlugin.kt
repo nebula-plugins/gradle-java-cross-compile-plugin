@@ -36,15 +36,16 @@ class JavaCrossCompilePlugin : Plugin<Project> {
         val targetCompatibility = convention.targetCompatibility
         if (targetCompatibility != JavaVersion.current()) {
             with(project.tasks) {
+                val location by lazy { targetCompatibility.locate() }
                 withType(JavaCompile::class.java) {
-                    it.options.bootClasspath = targetCompatibility.locate().bootClasspath
+                    it.options.bootClasspath = location.bootClasspath
                 }
                 withType(GroovyCompile::class.java) {
-                    it.options.bootClasspath = targetCompatibility.locate().bootClasspath
+                    it.options.bootClasspath = location.bootClasspath
                 }
                 project.plugins.withId("kotlin") {
                     withType(KotlinCompile::class.java) {
-                        it.kotlinOptions.jdkHome = targetCompatibility.locate().jdkHome
+                        it.kotlinOptions.jdkHome = location.jdkHome
                     }
                 }
             }
