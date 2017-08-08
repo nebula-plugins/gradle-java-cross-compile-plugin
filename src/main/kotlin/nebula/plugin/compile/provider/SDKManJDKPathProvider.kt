@@ -18,7 +18,7 @@ class SDKManJDKPathProvider : JDKPathProvider {
 
     override fun provide(javaVersion: JavaVersion): String? {
         val javaCandidates = File(System.getProperty("user.home"), SDKMAN_JAVA_CANDIDATES)
-        val candidates = javaCandidates.listFiles(FileFilter { it.isDirectory }).reversed()
+        val candidates = javaCandidates.listFiles(FileFilter { it.isDirectory })?.reversed() ?: emptyList()
 
         if (candidates.isEmpty()) {
             logger.debug("No candidates were found in $javaCandidates")
