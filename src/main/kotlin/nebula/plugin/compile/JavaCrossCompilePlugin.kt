@@ -2,6 +2,7 @@ package nebula.plugin.compile
 
 import nebula.plugin.compile.provider.DefaultLocationJDKPathProvider
 import nebula.plugin.compile.provider.EnvironmentJDKPathProvider
+import nebula.plugin.compile.provider.SDKManJDKPathProvider
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -21,7 +22,7 @@ class JavaCrossCompilePlugin : Plugin<Project> {
         const val CLASSES_JAR_PATH = "../Classes/classes.jar"
 
         val logger: Logger = LoggerFactory.getLogger(JavaCrossCompilePlugin::class.java)
-        val providers = listOf(EnvironmentJDKPathProvider(), DefaultLocationJDKPathProvider())
+        val providers = listOf(EnvironmentJDKPathProvider(), DefaultLocationJDKPathProvider(), SDKManJDKPathProvider())
     }
 
     override fun apply(project: Project) {
