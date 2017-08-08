@@ -17,6 +17,8 @@ The plugin supports Java, Groovy joint compilation, and Kotlin. The plugin locat
 - Default installation locations for MacOS, Ubuntu and Windows
     - Where more than one version of the JDK is available for a given version is available, the highest is used
     - The lookup prefers Oracle JDKs, but falls back to OpenJDK where possible
+- [SDKMAN!](http://sdkman.io/) JDK candidates
+	- The lookup prefers JDKs with no suffix, then Oracle JDKs then OpenJDK (zulu)
 
 # Quick Start
 
