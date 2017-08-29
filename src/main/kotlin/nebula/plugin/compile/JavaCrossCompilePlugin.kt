@@ -20,6 +20,7 @@ class JavaCrossCompilePlugin : Plugin<Project> {
     companion object {
         const val RT_JAR_PATH = "jre/lib/rt.jar"
         const val CLASSES_JAR_PATH = "../Classes/classes.jar"
+        val ADDITIONAL_JARS = listOf("jsse", "jce", "charsets")
 
         val logger: Logger = LoggerFactory.getLogger(JavaCrossCompilePlugin::class.java)
         val providers = listOf(EnvironmentJDKPathProvider(), DefaultLocationJDKPathProvider(), SDKManJDKPathProvider())
@@ -71,7 +72,7 @@ class JavaCrossCompilePlugin : Plugin<Project> {
                 File(jdkHome, RT_JAR_PATH),
                 File(jdkHome, CLASSES_JAR_PATH)
         )
-        val bootClasspath = runtimeJars
+        val runtimeJar = runtimeJars
                 .firstNotNullResult {
                     if (it.exists()) {
                         logger.debug("Found runtime classes jar $it")
@@ -81,7 +82,10 @@ class JavaCrossCompilePlugin : Plugin<Project> {
                         null
                     }
                 } ?: throw cannotLocate()
-        return JavaLocation(jdkHome, bootClasspath.absolutePath)
+        val libDir = runtimeJar.parentFile
+        val jarFiles = listOf(runtimeJar) + ADDITIONAL_JARS.map { File(libDir, "$it.jar") }
+        val classpath = jarFiles.joinToString(File.pathSeparator)
+        return JavaLocation(jdkHome, classpath)
     }
 
     private fun JavaVersion.cannotLocate(): IllegalStateException = IllegalStateException("Could not locate a compatible JDK for target compatibility $this. Change the source/target compatibility, set a JDK_1$majorVersion environment variable with the location, or install to one of the default search locations")
