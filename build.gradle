@@ -23,6 +23,7 @@ plugins {
 apply from: 'gradle/idea.gradle'
 
 dependencies {
+    compile 'com.netflix.nebula:nebula-gradle-interop:latest.release'
     compileOnly 'org.jetbrains.kotlin:kotlin-gradle-plugin:latest.release'
 }
 
