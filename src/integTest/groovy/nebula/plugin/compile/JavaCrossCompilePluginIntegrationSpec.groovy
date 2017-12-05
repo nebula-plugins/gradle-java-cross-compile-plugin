@@ -54,7 +54,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         then:
         def failure = result.failure
         failure != null
-        Throwables.getRootCause(failure).message == 'Could not locate a compatible JDK for target compatibility 1.4. Change the source/target compatibility, set a JDK_14 environment variable with the location, or install to one of the default search locations'
+        Throwables.getRootCause(failure).message == 'Could not locate a compatible JDK for target compatibility 1.4. Change the source/target compatibility, set a JDK_14 environment variable (or property) with the location, or install to one of the default search locations'
     }
 
     def 'java compilation does not warn about bootstrap class path'() {
