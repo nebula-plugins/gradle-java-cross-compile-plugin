@@ -15,7 +15,7 @@
             "requested": "latest.release"
         },
         "org.jetbrains.kotlin:kotlin-gradle-plugin": {
-            "locked": "1.2.10",
+            "locked": "1.2.31",
             "requested": "latest.release"
         },
         "org.jetbrains.kotlin:kotlin-stdlib-jre7": {
@@ -25,7 +25,7 @@
     },
     "compileOnly": {
         "org.jetbrains.kotlin:kotlin-gradle-plugin": {
-            "locked": "1.2.10",
+            "locked": "1.2.31",
             "requested": "latest.release"
         }
     },
@@ -45,7 +45,7 @@
             "requested": "latest.release"
         },
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.2",
+            "locked": "6.4.0",
             "requested": "6.+"
         },
         "org.jetbrains.kotlin:kotlin-stdlib-jre7": {
@@ -59,7 +59,7 @@
             "requested": "latest.release"
         },
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.2",
+            "locked": "6.4.0",
             "requested": "6.+"
         },
         "org.jetbrains.kotlin:kotlin-stdlib-jre7": {
@@ -73,7 +73,7 @@
             "requested": "latest.release"
         },
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.2",
+            "locked": "6.4.0",
             "requested": "6.+"
         },
         "org.jetbrains.kotlin:kotlin-stdlib-jre7": {
@@ -87,7 +87,7 @@
             "requested": "latest.release"
         },
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.2",
+            "locked": "6.4.0",
             "requested": "6.+"
         },
         "org.jetbrains.kotlin:kotlin-stdlib-jre7": {
@@ -97,14 +97,12 @@
     },
     "jacocoAgent": {
         "org.jacoco:org.jacoco.agent": {
-            "locked": "0.7.9",
-            "requested": "0.7.9"
+            "locked": "0.8.1"
         }
     },
     "jacocoAnt": {
         "org.jacoco:org.jacoco.ant": {
-            "locked": "0.7.9",
-            "requested": "0.7.9"
+            "locked": "0.8.1"
         }
     },
     "kapt": {
@@ -151,7 +149,7 @@
             "requested": "latest.release"
         },
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.2",
+            "locked": "6.4.0",
             "requested": "6.+"
         },
         "org.jetbrains.kotlin:kotlin-stdlib-jre7": {
@@ -165,7 +163,7 @@
             "requested": "latest.release"
         },
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.2",
+            "locked": "6.4.0",
             "requested": "6.+"
         },
         "org.jetbrains.kotlin:kotlin-stdlib-jre7": {
@@ -179,7 +177,7 @@
             "requested": "latest.release"
         },
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.2",
+            "locked": "6.4.0",
             "requested": "6.+"
         },
         "org.jetbrains.kotlin:kotlin-stdlib-jre7": {
@@ -193,7 +191,7 @@
             "requested": "latest.release"
         },
         "com.netflix.nebula:nebula-test": {
-            "locked": "6.1.2",
+            "locked": "6.4.0",
             "requested": "6.+"
         },
         "org.jetbrains.kotlin:kotlin-stdlib-jre7": {
