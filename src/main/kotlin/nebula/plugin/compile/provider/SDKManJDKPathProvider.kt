@@ -28,7 +28,7 @@ class SDKManJDKPathProvider : JDKPathProvider {
         listOf("", "oracle", "zulu").forEach { variant ->
             val jdkHome = candidates.firstOrNull {
                 logger.debug("Evaluating SDKMan candidate ${it.name}")
-                it.name.startsWith("${javaVersion.majorVersion}u") && (variant.isEmpty() || it.name.endsWith(variant))
+                isRightVersion(it.name, javaVersion) && (variant.isEmpty() || it.name.endsWith(variant))
             }
             if (jdkHome != null) {
                 logger.debug("Found SDKMan provided JDK at $jdkHome")
@@ -39,4 +39,7 @@ class SDKManJDKPathProvider : JDKPathProvider {
         logger.debug("No JDKs found in candidate locations $candidates")
         return null
     }
+
+    private fun isRightVersion(name: String, javaVersion: JavaVersion): Boolean =
+            name.startsWith("${javaVersion.majorVersion}u") || name.startsWith("${javaVersion.majorVersion}.")
 }
