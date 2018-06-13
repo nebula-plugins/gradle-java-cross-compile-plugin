@@ -43,7 +43,13 @@ class DefaultLocationJDKPathProvider : JDKPathProvider {
         val jdkHome = candidates.firstOrNull {
             logger.debug("Evaluating macOS/Windows candidate ${it.name}")
             val version = "1.${javaVersion.majorVersion}.0"
-            it.name.startsWith("jdk$version") || it.name.startsWith("$version.jdk")
+            val name = it.name
+            listOf(
+                    "jdk$version",
+                    "jdk-$version",
+                    "$version.jdk",
+                    "zulu$version"
+            ).any { name.startsWith(it) }
         }
 
         if (jdkHome != null) {
