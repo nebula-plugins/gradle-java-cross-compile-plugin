@@ -16,3 +16,6 @@
  */
 
 rootProject.name = 'gradle-java-cross-compile-plugin'
+
+enableFeaturePreview('STABLE_PUBLISHING')
+
