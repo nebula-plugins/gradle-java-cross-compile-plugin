@@ -50,14 +50,14 @@ class JavaCrossCompilePlugin : Plugin<Project> {
                     if (project.gradle.versionGreaterThan("4.2.1")) {
                         it.options.bootstrapClasspath = bootstrapClasspath
                     } else {
-                        it.options.bootClasspath = bootClasspath
+                        it.options.javaClass.getDeclaredMethod("setBootClasspath", String::class.java).invoke(it.options, bootClasspath)
                     }
                 }
                 withType(GroovyCompile::class.java) {
                     if (project.gradle.versionGreaterThan("4.2.1")) {
                         it.options.bootstrapClasspath = bootstrapClasspath
                     } else {
-                        it.options.bootClasspath = bootClasspath
+                        it.options.javaClass.getDeclaredMethod("setBootClasspath", String::class.java).invoke(it.options, bootClasspath)
                     }
                 }
                 project.plugins.withId("kotlin") {

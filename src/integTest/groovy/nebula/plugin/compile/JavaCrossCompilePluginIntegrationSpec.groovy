@@ -57,13 +57,17 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         Throwables.getRootCause(failure).message == 'Could not locate a compatible JDK for target compatibility 1.4. Change the source/target compatibility, set a JDK_14 environment variable with the location, or install to one of the default search locations'
     }
 
-    def 'java compilation does not warn about bootstrap class path'() {
+    @Unroll
+    def 'java compilation does not warn about bootstrap class path (gradle #gradle)'() {
         buildFile << """\
             apply plugin: 'nebula.java-cross-compile'
             apply plugin: 'java'
             
             sourceCompatibility = 1.7
         """
+        if (gradle != 'current') {
+            gradleVersion = gradle
+        }
 
         writeHelloWorld('helloworld')
 
@@ -72,5 +76,10 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
 
         then:
         !result.standardError.contains("warning: [options] bootstrap class path not set in conjunction with -source 1.7")
+
+        where:
+        gradle    | _
+        '4.2.1'   | _
+        'current' | _
     }
 }
