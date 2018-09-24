@@ -22,9 +22,17 @@ plugins {
 
 apply from: 'gradle/idea.gradle'
 
+def kotlinVersion = '1.2.70'
+
+
 dependencies {
     compile 'com.netflix.nebula:nebula-gradle-interop:latest.release'
-    compileOnly 'org.jetbrains.kotlin:kotlin-gradle-plugin:latest.release'
+    compileOnly "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+    compileOnly "org.jetbrains.kotlin:kotlin-compiler-embeddable:${kotlinVersion}"
+    compileOnly "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:${kotlinVersion}"
+    compileOnly "org.jetbrains.kotlin:kotlin-android-extensions:${kotlinVersion}"
+    compileOnly "org.jetbrains.kotlin:kotlin-compiler-runner:${kotlinVersion}"
+    compileOnly "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
 }
 
 description 'Gradle resolution rules plugin'
