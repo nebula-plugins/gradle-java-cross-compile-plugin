@@ -2,6 +2,8 @@ package nebula.plugin.compile
 
 import com.google.common.base.Throwables
 import nebula.test.IntegrationSpec
+import org.gradle.api.JavaVersion
+import org.junit.Assume
 import spock.lang.Unroll
 
 class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
@@ -41,6 +43,8 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
     }
 
     def 'missing jdk throws exception'() {
+        Assume.assumeTrue(JavaVersion.current() < JavaVersion.VERSION_1_9)
+
         buildFile << """\
             apply plugin: 'nebula.java-cross-compile'
             apply plugin: 'java'
