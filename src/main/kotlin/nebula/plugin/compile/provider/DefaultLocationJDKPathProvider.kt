@@ -48,7 +48,8 @@ class DefaultLocationJDKPathProvider : JDKPathProvider {
                     "jdk$version",
                     "jdk-$version",
                     "$version.jdk",
-                    "zulu$version"
+                    "zulu$version",
+                    "zulu-${javaVersion.majorVersion}.jdk"
             ).any { name.startsWith(it) }
         }
 
