@@ -1,6 +1,6 @@
 language: java
 sudo: false
-jdk: openjdk8
+jdk: openjdk9
 install: true
 script: "./gradle/buildViaTravis.sh"
 cache:
