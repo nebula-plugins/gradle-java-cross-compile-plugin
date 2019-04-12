@@ -44,20 +44,22 @@ class JavaCrossCompilePlugin : Plugin<Project> {
         if (targetCompatibility != JavaVersion.current()) {
             with(project.tasks) {
                 val location by lazy { targetCompatibility.locate(project) }
-                val bootstrapClasspath = location.bootstrapClasspath
-                val bootClasspath = bootstrapClasspath.joinToString(File.pathSeparator)
                 withType(JavaCompile::class.java) {
-                    if (project.gradle.versionGreaterThan("4.2.1")) {
-                        it.options.bootstrapClasspath = bootstrapClasspath
+                    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+                        it.options.compilerArgs.addAll(listOf("--release", targetCompatibility.majorVersion))
                     } else {
-                        it.options.javaClass.getDeclaredMethod("setBootClasspath", String::class.java).invoke(it.options, bootClasspath)
+                        if (project.gradle.versionGreaterThan("4.2.1")) {
+                            it.options.bootstrapClasspath = location.bootstrapClasspath
+                        } else {
+                            it.options.javaClass.getDeclaredMethod("setBootClasspath", String::class.java).invoke(it.options, location.bootClasspath)
+                        }
                     }
                 }
                 withType(GroovyCompile::class.java) {
                     if (project.gradle.versionGreaterThan("4.2.1")) {
-                        it.options.bootstrapClasspath = bootstrapClasspath
+                        it.options.bootstrapClasspath = location.bootstrapClasspath
                     } else {
-                        it.options.javaClass.getDeclaredMethod("setBootClasspath", String::class.java).invoke(it.options, bootClasspath)
+                        it.options.javaClass.getDeclaredMethod("setBootClasspath", String::class.java).invoke(it.options, location.bootClasspath)
                     }
                 }
                 project.plugins.withId("kotlin") {
@@ -105,5 +107,8 @@ class JavaCrossCompilePlugin : Plugin<Project> {
 
     private fun JavaVersion.cannotLocate(): IllegalStateException = IllegalStateException("Could not locate a compatible JDK for target compatibility $this. Change the source/target compatibility, set a JDK_1$majorVersion environment variable with the location, or install to one of the default search locations")
 
-    data class JavaLocation(val jdkHome: String, val bootstrapClasspath: FileCollection)
+    data class JavaLocation(val jdkHome: String, val bootstrapClasspath: FileCollection) {
+        val bootClasspath: String
+            get() = bootstrapClasspath.joinToString(File.pathSeparator)
+    }
 }
