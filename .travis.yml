@@ -8,7 +8,7 @@ cache:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
 after_success:
-- "./gradlew jacocoTestReport coveralls"JavaCrossCompilePlugin
+- "./gradlew jacocoTestReport coveralls"
 notifications:
   webhooks:
     urls:
