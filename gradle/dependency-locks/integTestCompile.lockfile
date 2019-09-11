@@ -3,7 +3,7 @@
 # This file is expected to be part of source control.
 cglib:cglib-nodep:3.2.2
 com.google.guava:guava:19.0
-com.netflix.nebula:nebula-gradle-interop:1.0.8
+com.netflix.nebula:nebula-gradle-interop:1.0.10
 com.netflix.nebula:nebula-test:7.3.0
 commons-io:commons-io:2.5
 junit:junit:4.12
