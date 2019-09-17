@@ -35,7 +35,7 @@ dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
 }
 
-description 'Gradle resolution rules plugin'
+description 'Gradle Java Cross-Compile Plugin'
 
 contacts {
     'dmthomas@gmail.com' {
