@@ -1,6 +1,7 @@
 package nebula.plugin.compile
 
 import com.netflix.nebula.interop.versionGreaterThan
+import com.netflix.nebula.interop.versionLessThan
 import nebula.plugin.compile.provider.DefaultLocationJDKPathProvider
 import nebula.plugin.compile.provider.EnvironmentJDKPathProvider
 import nebula.plugin.compile.provider.SDKManJDKPathProvider
@@ -10,6 +11,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.tasks.compile.CompileOptions
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -17,6 +19,7 @@ import org.jetbrains.kotlin.utils.addToStdlib.firstNotNullResult
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
+import kotlin.reflect.full.memberFunctions
 
 class JavaCrossCompilePlugin : Plugin<Project> {
     companion object {
@@ -26,8 +29,6 @@ class JavaCrossCompilePlugin : Plugin<Project> {
 
         val logger: Logger = LoggerFactory.getLogger(JavaCrossCompilePlugin::class.java)
         val providers = listOf(EnvironmentJDKPathProvider(), DefaultLocationJDKPathProvider(), SDKManJDKPathProvider())
-
-        fun cannotLocate(version: JavaVersion): IllegalStateException = IllegalStateException("Could not locate a compatible JDK for target compatibility $version. Change the source/target compatibility, set a JDK_1${version.majorVersion} environment variable with the location, or install to one of the default search locations")
     }
 
     override fun apply(project: Project) {
@@ -48,7 +49,7 @@ class JavaCrossCompilePlugin : Plugin<Project> {
                         it.options.compilerArgs.addAll(listOf("--release", targetCompatibility.majorVersion))
                     } else {
                         if (project.gradle.versionGreaterThan("4.2.1")) {
-                            it.options.bootstrapClasspath = project.files(location.bootClasspath)
+                            it.options.bootstrapClasspath = location.bootstrapClasspath
                         } else {
                             it.options.javaClass.getDeclaredMethod("setBootClasspath", String::class.java).invoke(it.options, location.bootClasspath)
                         }
@@ -56,7 +57,7 @@ class JavaCrossCompilePlugin : Plugin<Project> {
                 }
                 withType(GroovyCompile::class.java) {
                     if (project.gradle.versionGreaterThan("4.2.1")) {
-                        it.options.bootstrapClasspath = project.files(location.bootClasspath)
+                        it.options.bootstrapClasspath = location.bootstrapClasspath
                     } else {
                         it.options.javaClass.getDeclaredMethod("setBootClasspath", String::class.java).invoke(it.options, location.bootClasspath)
                     }
@@ -82,31 +83,32 @@ class JavaCrossCompilePlugin : Plugin<Project> {
                         logger.debug("Provider $it found a JDK at $jdkHome")
                         jdkHome
                     }
-                } ?: throw cannotLocate(this)
+                } ?: throw cannotLocate()
         logger.debug("Found JDK for $this at $jdkHome")
-        return JavaLocation(this, jdkHome)
+        val runtimeJars = listOf(
+                File(jdkHome, RT_JAR_PATH),
+                File(jdkHome, CLASSES_JAR_PATH)
+        )
+        val runtimeJar = runtimeJars
+                .firstNotNullResult {
+                    if (it.exists()) {
+                        logger.debug("Found runtime classes jar $it")
+                        it
+                    } else {
+                        logger.debug("Runtime classes jar $it does not exist")
+                        null
+                    }
+                } ?: throw cannotLocate()
+        val libDir = runtimeJar.parentFile
+        val jarFiles = listOf(runtimeJar) + ADDITIONAL_JARS.map { File(libDir, "$it.jar") }
+        val classpath = jarFiles.joinToString(File.pathSeparator)
+        return JavaLocation(jdkHome, project.files(classpath))
     }
 
-    data class JavaLocation(val requestedVersion: JavaVersion, val jdkHome: String) {
+    private fun JavaVersion.cannotLocate(): IllegalStateException = IllegalStateException("Could not locate a compatible JDK for target compatibility $this. Change the source/target compatibility, set a JDK_1$majorVersion environment variable with the location, or install to one of the default search locations")
+
+    data class JavaLocation(val jdkHome: String, val bootstrapClasspath: FileCollection) {
         val bootClasspath: String
-            get() {
-                val runtimeJars = listOf(
-                        File(jdkHome, RT_JAR_PATH),
-                        File(jdkHome, CLASSES_JAR_PATH)
-                )
-                val runtimeJar = runtimeJars
-                        .firstNotNullResult {
-                            if (it.exists()) {
-                                logger.debug("Found runtime classes jar $it")
-                                it
-                            } else {
-                                logger.debug("Runtime classes jar $it does not exist")
-                                null
-                            }
-                        } ?: throw cannotLocate(requestedVersion)
-                val libDir = runtimeJar.parentFile
-                val jarFiles = listOf(runtimeJar) + ADDITIONAL_JARS.map { File(libDir, "$it.jar") }
-                return jarFiles.joinToString(File.pathSeparator)
-            }
+            get() = bootstrapClasspath.joinToString(File.pathSeparator)
     }
 }
