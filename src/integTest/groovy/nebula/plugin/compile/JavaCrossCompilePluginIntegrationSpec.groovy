@@ -86,4 +86,31 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         '4.2.1'   | _
         'current' | _
     }
+
+    def 'kotlin cross compile can be disabled'() {
+        Assume.assumeTrue(JavaVersion.current() >= JavaVersion.VERSION_1_9)
+        buildFile << """\
+            buildscript {
+                repositories {
+                    mavenCentral()
+                }
+            
+                dependencies {
+                    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50"
+                }
+            }
+
+            apply plugin: 'nebula.java-cross-compile'
+            apply plugin: 'kotlin'
+            
+            javaCrossCompile {
+                disableKotlinSupport = true
+            }
+            
+            sourceCompatibility = 1.8
+        """
+
+        expect:
+        def result = runTasksSuccessfully('help')
+    }
 }

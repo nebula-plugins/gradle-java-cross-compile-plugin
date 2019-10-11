@@ -1,7 +1,6 @@
 package nebula.plugin.compile
 
 import com.netflix.nebula.interop.versionGreaterThan
-import com.netflix.nebula.interop.versionLessThan
 import nebula.plugin.compile.provider.DefaultLocationJDKPathProvider
 import nebula.plugin.compile.provider.EnvironmentJDKPathProvider
 import nebula.plugin.compile.provider.SDKManJDKPathProvider
@@ -11,15 +10,12 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
-import org.gradle.api.tasks.compile.CompileOptions
-import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.utils.addToStdlib.firstNotNullResult
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import kotlin.reflect.full.memberFunctions
 
 class JavaCrossCompilePlugin : Plugin<Project> {
     companion object {
@@ -32,13 +28,14 @@ class JavaCrossCompilePlugin : Plugin<Project> {
     }
 
     override fun apply(project: Project) {
+        val extension = project.extensions.create("javaCrossCompile", JavaCrossCompileExtension::class.java)
         project.plugins.apply(JavaBasePlugin::class.java)
         project.afterEvaluate {
-            configureBootstrapClasspath(project)
+            configureBootstrapClasspath(project, extension)
         }
     }
 
-    private fun configureBootstrapClasspath(project: Project) {
+    private fun configureBootstrapClasspath(project: Project, extension: JavaCrossCompileExtension) {
         val convention = project.convention.plugins["java"] as JavaPluginConvention? ?: return
         val targetCompatibility = convention.targetCompatibility
         if (targetCompatibility != JavaVersion.current()) {
@@ -55,16 +52,13 @@ class JavaCrossCompilePlugin : Plugin<Project> {
                         }
                     }
                 }
-                withType(GroovyCompile::class.java) {
-                    if (project.gradle.versionGreaterThan("4.2.1")) {
-                        it.options.bootstrapClasspath = location.bootstrapClasspath
-                    } else {
-                        it.options.javaClass.getDeclaredMethod("setBootClasspath", String::class.java).invoke(it.options, location.bootClasspath)
-                    }
-                }
-                project.plugins.withId("kotlin") {
-                    withType(KotlinCompile::class.java) {
-                        it.kotlinOptions.jdkHome = location.jdkHome
+                //disable is useful when you have single jdk 11 on a machine and you target 8 in your build
+                //can be removed when https://youtrack.jetbrains.com/issue/KT-29974 is resolved and we can use similar approach as for java
+                if (! extension.disableKotlinSupport) {
+                    project.plugins.withId("kotlin") {
+                        withType(KotlinCompile::class.java) {
+                            it.kotlinOptions.jdkHome = location.jdkHome
+                        }
                     }
                 }
             }
