@@ -38,7 +38,7 @@ class JavaCrossCompilePlugin : Plugin<Project> {
     private fun configureBootstrapClasspath(project: Project, extension: JavaCrossCompileExtension) {
         val convention = project.convention.plugins["java"] as JavaPluginConvention? ?: return
         val targetCompatibility = convention.targetCompatibility
-        if (targetCompatibility <= JavaVersion.current()) {
+        if (targetCompatibility < JavaVersion.current()) {
             with(project.tasks) {
                 val location by lazy { targetCompatibility.locate(project) }
                 withType(JavaCompile::class.java) {
