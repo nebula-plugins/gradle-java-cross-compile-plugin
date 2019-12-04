@@ -12,8 +12,9 @@ import java.io.FileFilter
 class DefaultLocationJDKPathProvider : JDKPathProvider {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(DefaultLocationJDKPathProvider::class.java)
-        val basePaths = listOf(
+        var basePaths = listOf(
                 File("/usr/lib/jvm"),
+                File("/opt/hostedtoolcache"),
                 File("/Library/Java/JavaVirtualMachines"),
                 File("""C:\Program Files\Java""")
         )
@@ -37,6 +38,29 @@ class DefaultLocationJDKPathProvider : JDKPathProvider {
             if (jdkHome != null) {
                 logger.debug("Found Ubuntu JDK at $jdkHome")
                 return jdkHome.absolutePath
+            }
+        }
+
+        listOf("jdk", "jre", "jdk+fx").forEach { javaPackage ->
+            val candidatesForJavaPackage = candidates.firstOrNull {
+                logger.debug("Evaluating Github Actions java-package candidate ${it.name}")
+                it.name.startsWith(javaPackage)
+            }?.listFiles(FileFilter { it.isDirectory })?.toList() ?: emptyList()
+
+            val candidatesForJavaVersion = candidatesForJavaPackage.firstOrNull {
+                logger.debug("Evaluating Github Actions java-version candidate ${it.name}")
+                it.name.startsWith("${javaVersion.majorVersion}.")
+            }?.listFiles(FileFilter { it.isDirectory })?.toList() ?: emptyList()
+
+            listOf("x64", "x86").forEach { architecture ->
+                val jdkHomeWithGithubActions = candidatesForJavaVersion.firstOrNull {
+                    logger.debug("Evaluating Github Actions architecture candidate ${it.name}")
+                    it.name.startsWith(architecture)
+                }
+                if (jdkHomeWithGithubActions != null) {
+                    logger.debug("Found Github Actions JDK at $jdkHomeWithGithubActions")
+                    return jdkHomeWithGithubActions.absolutePath
+                }
             }
         }
 
