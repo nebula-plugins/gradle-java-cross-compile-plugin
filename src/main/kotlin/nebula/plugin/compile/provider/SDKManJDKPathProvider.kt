@@ -1,6 +1,9 @@
 package nebula.plugin.compile.provider
 
+import com.netflix.nebula.interop.versionLessThan
 import org.gradle.api.JavaVersion
+import org.gradle.api.Project
+import org.gradle.api.provider.ProviderFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -9,7 +12,7 @@ import java.io.FileFilter
 /**
  * Provide JDK path from SDKMan candidates.
  */
-class SDKManJDKPathProvider : JDKPathProvider {
+class SDKManJDKPathProvider constructor(private val providerFactory: ProviderFactory, private val project: Project): JDKPathProvider {
     companion object {
         const val SDKMAN_JAVA_CANDIDATES = ".sdkman/candidates/java"
 
@@ -17,7 +20,9 @@ class SDKManJDKPathProvider : JDKPathProvider {
     }
 
     override fun provide(javaVersion: JavaVersion): String? {
-        val javaCandidates = File(System.getProperty("user.home"), SDKMAN_JAVA_CANDIDATES)
+
+        val userHome =  if(project.gradle.versionLessThan("6.5")) System.getProperty("user.home") else providerFactory.systemProperty("user.home").forUseAtConfigurationTime().get()
+        val javaCandidates = File(userHome, SDKMAN_JAVA_CANDIDATES)
         val candidates = javaCandidates.listFiles(FileFilter { it.isDirectory })?.reversed() ?: emptyList()
 
         if (candidates.isEmpty()) {

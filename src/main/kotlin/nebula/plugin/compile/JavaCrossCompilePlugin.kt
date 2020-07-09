@@ -3,6 +3,7 @@ package nebula.plugin.compile
 import com.netflix.nebula.interop.versionGreaterThan
 import nebula.plugin.compile.provider.DefaultLocationJDKPathProvider
 import nebula.plugin.compile.provider.EnvironmentJDKPathProvider
+import nebula.plugin.compile.provider.JDKPathProvider
 import nebula.plugin.compile.provider.SDKManJDKPathProvider
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
@@ -10,37 +11,38 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.utils.addToStdlib.firstNotNullResult
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
+import javax.inject.Inject
 
-class JavaCrossCompilePlugin : Plugin<Project> {
+class JavaCrossCompilePlugin @Inject constructor(private val providerFactory: ProviderFactory) : Plugin<Project> {
     companion object {
         const val RT_JAR_PATH = "jre/lib/rt.jar"
         const val CLASSES_JAR_PATH = "../Classes/classes.jar"
         val ADDITIONAL_JARS = listOf("jsse", "jce", "charsets")
 
         val logger: Logger = LoggerFactory.getLogger(JavaCrossCompilePlugin::class.java)
-        val providers = listOf(EnvironmentJDKPathProvider(), DefaultLocationJDKPathProvider(), SDKManJDKPathProvider())
     }
-
     override fun apply(project: Project) {
+        val providers = listOf(EnvironmentJDKPathProvider(providerFactory, project), DefaultLocationJDKPathProvider(), SDKManJDKPathProvider(providerFactory, project))
         val extension = project.extensions.create("javaCrossCompile", JavaCrossCompileExtension::class.java)
         project.plugins.apply(JavaBasePlugin::class.java)
         project.afterEvaluate {
-            configureBootstrapClasspath(project, extension)
+            configureBootstrapClasspath(project, providers, extension)
         }
     }
 
-    private fun configureBootstrapClasspath(project: Project, extension: JavaCrossCompileExtension) {
+    private fun configureBootstrapClasspath(project: Project, providers: List<JDKPathProvider>, extension: JavaCrossCompileExtension) {
         val convention = project.convention.plugins["java"] as JavaPluginConvention? ?: return
         val targetCompatibility = convention.targetCompatibility
         if (targetCompatibility < JavaVersion.current()) {
             with(project.tasks) {
-                val location by lazy { targetCompatibility.locate(project) }
+                val location by lazy { targetCompatibility.locate(project, providers) }
                 withType(JavaCompile::class.java) {
                     if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
                         it.options.compilerArgs.addAll(listOf("--release", targetCompatibility.majorVersion))
@@ -65,7 +67,7 @@ class JavaCrossCompilePlugin : Plugin<Project> {
         }
     }
 
-    private fun JavaVersion.locate(project: Project): JavaLocation {
+    private fun JavaVersion.locate(project: Project, providers: List<JDKPathProvider>): JavaLocation {
         logger.debug("Locating JDK for $this")
         val jdkHome = providers
                 .firstNotNullResult {
