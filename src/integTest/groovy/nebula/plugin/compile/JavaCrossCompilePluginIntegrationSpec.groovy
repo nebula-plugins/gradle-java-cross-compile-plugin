@@ -113,4 +113,22 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         expect:
         def result = runTasksSuccessfully('help')
     }
+
+    def 'Uses configuration cache'() {
+        buildFile << """\
+            apply plugin: 'nebula.java-cross-compile'
+            apply plugin: 'java'
+            
+            sourceCompatibility = 1.8
+        """
+        writeHelloWorld('helloworld')
+
+        when:
+        runTasks('--configuration-cache=on', 'compileJava')
+        def result = runTasks('--configuration-cache=on', 'compileJava')
+
+        then:
+        result.standardOutput.contains('Reusing configuration cache')
+    }
+
 }
