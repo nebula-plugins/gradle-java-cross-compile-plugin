@@ -124,8 +124,8 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         writeHelloWorld('helloworld')
 
         when:
-        runTasks('--configuration-cache=on', 'compileJava')
-        def result = runTasks('--configuration-cache=on', 'compileJava')
+        runTasks('--configuration-cache', 'compileJava')
+        def result = runTasks('--configuration-cache', 'compileJava')
 
         then:
         result.standardOutput.contains('Reusing configuration cache')
