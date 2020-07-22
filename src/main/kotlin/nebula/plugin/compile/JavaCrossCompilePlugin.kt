@@ -1,6 +1,7 @@
 package nebula.plugin.compile
 
 import com.netflix.nebula.interop.versionGreaterThan
+import com.netflix.nebula.interop.versionLessThan
 import nebula.plugin.compile.provider.DefaultLocationJDKPathProvider
 import nebula.plugin.compile.provider.EnvironmentJDKPathProvider
 import nebula.plugin.compile.provider.JDKPathProvider
@@ -45,7 +46,11 @@ class JavaCrossCompilePlugin @Inject constructor(private val providerFactory: Pr
                 val location by lazy { targetCompatibility.locate(project, providers) }
                 withType(JavaCompile::class.java) {
                     if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-                        it.options.compilerArgs.addAll(listOf("--release", targetCompatibility.majorVersion))
+                        if (project.gradle.versionLessThan("6.6-rc-1")) {
+                            it.options.compilerArgs.addAll(listOf("--release", targetCompatibility.majorVersion))
+                        } else {
+                            it.options.release.set(targetCompatibility.majorVersion.toInt())
+                        }
                     } else {
                         if (project.gradle.versionGreaterThan("4.2.1")) {
                             it.options.bootstrapClasspath = location.bootstrapClasspath
