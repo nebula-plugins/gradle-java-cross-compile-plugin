@@ -38,13 +38,9 @@ dependencies {
 description 'Gradle Java Cross-Compile Plugin'
 
 contacts {
-    'dmthomas@gmail.com' {
-        moniker 'Danny Thomas'
-        github 'DanielThomas'
-    }
-    'roberto@perezalcolea.info' {
-        moniker 'Roberto Perez Alcolea'
-        github 'rpalcolea'
+    'nebula-plugins-oss@netflix.com' {
+        moniker 'Nebula Plugins Maintainers'
+        github 'nebula-plugins'
     }
 }
 
