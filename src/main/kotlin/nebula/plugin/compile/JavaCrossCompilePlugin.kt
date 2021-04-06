@@ -39,6 +39,9 @@ class JavaCrossCompilePlugin @Inject constructor(private val providerFactory: Pr
     }
 
     private fun configureBootstrapClasspath(project: Project, providers: List<JDKPathProvider>, extension: JavaCrossCompileExtension) {
+        if (!extension.enabled) {
+            return
+        }
         val convention = project.convention.plugins["java"] as JavaPluginConvention? ?: return
         val targetCompatibility = convention.targetCompatibility
         if (targetCompatibility < JavaVersion.current()) {
