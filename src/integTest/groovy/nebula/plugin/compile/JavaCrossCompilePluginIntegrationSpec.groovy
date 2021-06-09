@@ -57,7 +57,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         then:
         def failure = result.failure
         failure != null
-        failure.cause.cause.cause.message == 'Could not locate a compatible JDK for target compatibility 1.4. Change the source/target compatibility, set a JDK_14 environment variable with the location, or install to one of the default search locations'
+        failure.cause.cause.message == 'Could not locate a compatible JDK for target compatibility 1.4. Change the source/target compatibility, set a JDK_14 environment variable with the location, or install to one of the default search locations'
     }
 
     @Unroll
