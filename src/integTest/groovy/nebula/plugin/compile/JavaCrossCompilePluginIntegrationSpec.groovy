@@ -1,6 +1,5 @@
 package nebula.plugin.compile
 
-import com.google.common.base.Throwables
 import nebula.test.IntegrationSpec
 import org.gradle.api.JavaVersion
 import org.junit.Assume
@@ -58,7 +57,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         then:
         def failure = result.failure
         failure != null
-        Throwables.getRootCause(failure).message == 'Could not locate a compatible JDK for target compatibility 1.4. Change the source/target compatibility, set a JDK_14 environment variable with the location, or install to one of the default search locations'
+        failure.cause.cause.cause.message == 'Could not locate a compatible JDK for target compatibility 1.4. Change the source/target compatibility, set a JDK_14 environment variable with the location, or install to one of the default search locations'
     }
 
     @Unroll
