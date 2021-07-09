@@ -82,7 +82,9 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
 
         where:
         gradle    | _
-        '4.2.1'   | _
+        '6.7'   | _
+        '6.8'   | _
+        '6.9'   | _
         'current' | _
     }
 
@@ -111,5 +113,28 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
 
         expect:
         def result = runTasksSuccessfully('help')
+    }
+
+    @Unroll
+    def 'Do not apply opinions if using Java Toolchains'() {
+        buildFile << """\
+            apply plugin: 'nebula.java-cross-compile'
+            apply plugin: 'java'
+            
+
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(16)
+                }
+            }
+        """
+
+        writeHelloWorld('helloworld')
+
+        when:
+        def result = runTasks('compileJava', '-d')
+
+        then:
+        result.standardOutput.contains("Toolchain is configured for this project, skipping java-cross-compile plugin configuration")
     }
 }
