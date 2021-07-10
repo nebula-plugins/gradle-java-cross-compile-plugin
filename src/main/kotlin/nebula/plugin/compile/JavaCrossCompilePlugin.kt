@@ -12,8 +12,10 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.jvm.toolchain.internal.DefaultToolchainSpec
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.utils.addToStdlib.firstNotNullResult
 import org.slf4j.Logger
@@ -43,6 +45,13 @@ class JavaCrossCompilePlugin @Inject constructor(private val providerFactory: Pr
             return
         }
         val convention = project.convention.plugins["java"] as JavaPluginConvention? ?: return
+
+        // Do not configure project if toolchains are used
+        val toolchain = project.extensions.getByType(JavaPluginExtension::class.java).toolchain
+        if((toolchain as DefaultToolchainSpec).isConfigured) {
+            project.logger.debug("Toolchain is configured for this project, skipping java-cross-compile plugin configuration")
+            return
+        }
         val targetCompatibility = convention.targetCompatibility
         if (targetCompatibility < JavaVersion.current()) {
             with(project.tasks) {
