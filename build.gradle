@@ -16,17 +16,17 @@
  */
 
 plugins {
-    id 'nebula.plugin-plugin' version '15.4.1'
-    id 'nebula.kotlin' version '1.3.50'
+    id 'nebula.plugin-plugin' version '16.0.1'
+    id "org.jetbrains.kotlin.jvm" version "1.4.30"
 }
 
 apply from: 'gradle/idea.gradle'
 
-def kotlinVersion = '1.3.50'
+def kotlinVersion = '1.4.30'
 
 
 dependencies {
-    compile 'com.netflix.nebula:nebula-gradle-interop:latest.release'
+    implementation 'com.netflix.nebula:nebula-gradle-interop:latest.release'
     compileOnly "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
     compileOnly "org.jetbrains.kotlin:kotlin-compiler-embeddable:${kotlinVersion}"
     compileOnly "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:${kotlinVersion}"

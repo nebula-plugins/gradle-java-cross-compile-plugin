@@ -112,7 +112,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         """
 
         expect:
-        def result = runTasksSuccessfully('help')
+        def result = runTasksSuccessfully('help', '--warning-mode', 'none')
     }
 
     @Unroll
