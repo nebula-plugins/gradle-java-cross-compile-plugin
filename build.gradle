@@ -17,12 +17,12 @@
 
 plugins {
     id 'nebula.plugin-plugin' version '16.0.1'
-    id "org.jetbrains.kotlin.jvm" version "1.4.30"
+    id "org.jetbrains.kotlin.jvm" version "1.5.31"
 }
 
 apply from: 'gradle/idea.gradle'
 
-def kotlinVersion = '1.4.30'
+def kotlinVersion = '1.5.31'
 
 
 dependencies {
@@ -33,6 +33,7 @@ dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-android-extensions:${kotlinVersion}"
     compileOnly "org.jetbrains.kotlin:kotlin-compiler-runner:${kotlinVersion}"
     compileOnly "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
+    testImplementation "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
 }
 
 description 'Gradle Java Cross-Compile Plugin'

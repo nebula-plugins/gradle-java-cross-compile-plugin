@@ -87,31 +87,31 @@ class JavaCrossCompilePlugin @Inject constructor(private val providerFactory: Pr
     private fun JavaVersion.locate(project: Project, providers: List<JDKPathProvider>): JavaLocation {
         logger.debug("Locating JDK for $this")
         val jdkHome = providers
-                .firstNotNullResult {
-                    val jdkHome = it.provide(this)
-                    if (jdkHome == null) {
-                        logger.debug("Provider $it did not find a JDK")
-                        null
-                    } else {
-                        logger.debug("Provider $it found a JDK at $jdkHome")
-                        jdkHome
-                    }
-                } ?: throw cannotLocate()
+            .firstNotNullOfOrNull {
+                val jdkHome = it.provide(this)
+                if (jdkHome == null) {
+                    logger.debug("Provider $it did not find a JDK")
+                    null
+                } else {
+                    logger.debug("Provider $it found a JDK at $jdkHome")
+                    jdkHome
+                }
+            } ?: throw cannotLocate()
         logger.debug("Found JDK for $this at $jdkHome")
         val runtimeJars = listOf(
                 File(jdkHome, RT_JAR_PATH),
                 File(jdkHome, CLASSES_JAR_PATH)
         )
         val runtimeJar = runtimeJars
-                .firstNotNullResult {
-                    if (it.exists()) {
-                        logger.debug("Found runtime classes jar $it")
-                        it
-                    } else {
-                        logger.debug("Runtime classes jar $it does not exist")
-                        null
-                    }
-                } ?: throw cannotLocate()
+            .firstNotNullOfOrNull {
+                if (it.exists()) {
+                    logger.debug("Found runtime classes jar $it")
+                    it
+                } else {
+                    logger.debug("Runtime classes jar $it does not exist")
+                    null
+                }
+            } ?: throw cannotLocate()
         val libDir = runtimeJar.parentFile
         val jarFiles = listOf(runtimeJar) + ADDITIONAL_JARS.map { File(libDir, "$it.jar") }
         val classpath = jarFiles.joinToString(File.pathSeparator)
