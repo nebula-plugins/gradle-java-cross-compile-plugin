@@ -16,7 +16,6 @@ import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.toolchain.internal.DefaultToolchainSpec
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.utils.addToStdlib.firstNotNullResult
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
