@@ -15,7 +15,6 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.toolchain.internal.DefaultToolchainSpec
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -75,9 +74,7 @@ class JavaCrossCompilePlugin @Inject constructor(private val providerFactory: Pr
                 //can be removed when https://youtrack.jetbrains.com/issue/KT-29974 is resolved and we can use similar approach as for java
                 if (! extension.disableKotlinSupport) {
                     project.plugins.withId("kotlin") {
-                        withType(KotlinCompile::class.java) {
-                            it.kotlinOptions.jdkHome = location.jdkHome
-                        }
+                        configureKotlinCompiler(project, location)
                     }
                 }
             }
