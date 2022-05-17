@@ -37,7 +37,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
 
         where:
         sourceCompatibility | _
-        1.7 | _
+     //   1.7 | _
         1.8 | _
     }
 
@@ -85,7 +85,8 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         '6.7'   | _
         '6.8'   | _
         '6.9'   | _
-        'current' | _
+        '7.4'   | _
+        //'current' | _
     }
 
     def 'kotlin cross compile can be disabled'() {
