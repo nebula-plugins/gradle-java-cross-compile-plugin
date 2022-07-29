@@ -16,7 +16,7 @@
  */
 
 plugins {
-    id 'nebula.plugin-plugin' version '16.3.0'
+    id 'nebula.plugin-plugin' version '17.0.0'
     id "org.jetbrains.kotlin.jvm" version "1.5.31"
 }
 
@@ -45,13 +45,18 @@ contacts {
     }
 }
 
+
 pluginBundle {
+    tags = ['nebula', 'compile', 'java', 'groovy', 'kotlin']
+}
+
+gradlePlugin {
     plugins {
-        resolutionRules {
+        javaCrossCompile {
             id = 'nebula.java-cross-compile'
             displayName = 'Gradle Java Cross-Compile Plugin'
             description = project.description
-            tags = ['nebula', 'compile', 'java', 'groovy', 'kotlin']
+            implementationClass = 'nebula.plugin.compile.JavaCrossCompilePlugin'
         }
     }
 }
