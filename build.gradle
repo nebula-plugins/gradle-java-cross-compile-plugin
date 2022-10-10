@@ -53,7 +53,7 @@ pluginBundle {
 gradlePlugin {
     plugins {
         javaCrossCompile {
-            id = 'nebula.java-cross-compile'
+            id = 'com.netflix.nebula.java-cross-compile'
             displayName = 'Gradle Java Cross-Compile Plugin'
             description = project.description
             implementationClass = 'nebula.plugin.compile.JavaCrossCompilePlugin'

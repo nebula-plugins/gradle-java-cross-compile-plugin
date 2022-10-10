@@ -8,7 +8,7 @@ import spock.lang.Unroll
 class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
     def 'plugin applies'() {
         buildFile << """\
-            apply plugin: 'nebula.java-cross-compile'
+            apply plugin: 'com.netflix.nebula.java-cross-compile'
         """
 
         when:
@@ -21,7 +21,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
     @Unroll
     def 'sourceCompatibility set to #sourceCompatibility'(Double sourceCompatibility) {
         buildFile << """\
-            apply plugin: 'nebula.java-cross-compile'
+            apply plugin: 'com.netflix.nebula.java-cross-compile'
             apply plugin: 'java'
             
             sourceCompatibility = $sourceCompatibility
@@ -45,7 +45,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         Assume.assumeTrue(JavaVersion.current() < JavaVersion.VERSION_1_9)
 
         buildFile << """\
-            apply plugin: 'nebula.java-cross-compile'
+            apply plugin: 'com.netflix.nebula.java-cross-compile'
             apply plugin: 'java'
             
             sourceCompatibility = 1.4
@@ -63,7 +63,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
     @Unroll
     def 'java compilation does not warn about bootstrap class path (gradle #gradle)'() {
         buildFile << """\
-            apply plugin: 'nebula.java-cross-compile'
+            apply plugin: 'com.netflix.nebula.java-cross-compile'
             apply plugin: 'java'
             
             sourceCompatibility = 1.7
@@ -102,7 +102,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
                 }
             }
 
-            apply plugin: 'nebula.java-cross-compile'
+            apply plugin: 'com.netflix.nebula.java-cross-compile'
             apply plugin: 'kotlin'
             
             javaCrossCompile {
@@ -119,7 +119,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
     @Unroll
     def 'Do not apply opinions if using Java Toolchains'() {
         buildFile << """\
-            apply plugin: 'nebula.java-cross-compile'
+            apply plugin: 'com.netflix.nebula.java-cross-compile'
             apply plugin: 'java'
             
 
