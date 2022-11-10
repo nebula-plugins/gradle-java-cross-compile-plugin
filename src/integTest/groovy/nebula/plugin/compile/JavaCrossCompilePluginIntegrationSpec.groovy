@@ -116,7 +116,7 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
         def result = runTasksSuccessfully('help', '--warning-mode', 'none')
     }
 
-    @Unroll
+
     def 'Do not apply opinions if using Java Toolchains'() {
         buildFile << """\
             apply plugin: 'com.netflix.nebula.java-cross-compile'
@@ -125,9 +125,10 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
 
             java {
                 toolchain {
-                    languageVersion = JavaLanguageVersion.of(16)
+                    languageVersion = JavaLanguageVersion.of(8)
                 }
             }
+           
         """
 
         writeHelloWorld('helloworld')
