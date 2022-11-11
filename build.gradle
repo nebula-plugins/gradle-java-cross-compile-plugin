@@ -16,7 +16,7 @@
  */
 
 plugins {
-    id 'com.netflix.nebula.plugin-plugin' version '19.0.2'
+    id 'com.netflix.nebula.plugin-plugin' version '20.0.0'
     id "org.jetbrains.kotlin.jvm" version "1.6.21"
 }
 
@@ -46,10 +46,6 @@ contacts {
 }
 
 
-pluginBundle {
-    tags = ['nebula', 'compile', 'java', 'groovy', 'kotlin']
-}
-
 gradlePlugin {
     plugins {
         javaCrossCompile {
@@ -57,6 +53,7 @@ gradlePlugin {
             displayName = 'Gradle Java Cross-Compile Plugin'
             description = project.description
             implementationClass = 'nebula.plugin.compile.JavaCrossCompilePlugin'
+            tags.set(['nebula', 'compile', 'java', 'groovy', 'kotlin'])
         }
     }
 }
