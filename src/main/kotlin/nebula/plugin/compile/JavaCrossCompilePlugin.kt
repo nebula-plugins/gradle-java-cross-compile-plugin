@@ -70,13 +70,6 @@ class JavaCrossCompilePlugin @Inject constructor(private val providerFactory: Pr
                         }
                     }
                 }
-                //disable is useful when you have single jdk 11 on a machine and you target 8 in your build
-                //can be removed when https://youtrack.jetbrains.com/issue/KT-29974 is resolved and we can use similar approach as for java
-                if (! extension.disableKotlinSupport) {
-                    project.plugins.withId("kotlin") {
-                        configureKotlinCompiler(project, location)
-                    }
-                }
             }
         }
     }
