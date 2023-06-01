@@ -24,7 +24,9 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.netflix.nebula.java-cross-compile'
             apply plugin: 'java'
             
-            sourceCompatibility = $sourceCompatibility
+            java {
+                 sourceCompatibility = $sourceCompatibility
+            }
         """
 
         when:
@@ -48,7 +50,9 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.netflix.nebula.java-cross-compile'
             apply plugin: 'java'
             
-            sourceCompatibility = 1.4
+            java {
+              sourceCompatibility = 1.4
+            }
         """
 
         when:
@@ -66,7 +70,9 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.netflix.nebula.java-cross-compile'
             apply plugin: 'java'
             
-            sourceCompatibility = 1.7
+            java {
+              sourceCompatibility = 1.7
+            }
         """
         if (gradle != 'current') {
             gradleVersion = gradle
@@ -109,7 +115,9 @@ class JavaCrossCompilePluginIntegrationSpec extends IntegrationSpec {
                 disableKotlinSupport = true
             }
             
-            sourceCompatibility = 1.8
+            java {
+                sourceCompatibility = 1.8
+            }
         """
 
         expect:
